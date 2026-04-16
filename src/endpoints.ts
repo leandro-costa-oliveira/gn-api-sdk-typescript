@@ -1,11 +1,11 @@
 /* eslint-disable import/extensions */
+import axios from 'axios';
 import fs from 'fs';
 import https from 'https';
-import axios from 'axios';
-import Auth from './auth';
 import sdkPackage from '../package.json';
-import { GnConfig } from './interfaces/gnConfig.interface';
+import Auth from './auth';
 import { EndpointInterface } from './interfaces/endpoint.interface';
+import { GnConfig } from './interfaces/gnConfig.interface';
 
 class Endpoints {
 	private options: GnConfig;
@@ -40,13 +40,13 @@ class Endpoints {
 
 			try {
 				if (this.options.certificate) {
-					if(this.options.pemKey){
+					if (this.options.pemKey) {
 						this.agent = new https.Agent({
-							cert:  fs.readFileSync(this.options.certificate),
-							key:  fs.readFileSync(this.options.pemKey),
+							cert: fs.readFileSync(this.options.certificate),
+							key: fs.readFileSync(this.options.pemKey),
 							passphrase: '',
 						});
-					}else{
+					} else {
 						this.agent = new https.Agent({
 							pfx: fs.readFileSync(this.options.certificate),
 							passphrase: '',
