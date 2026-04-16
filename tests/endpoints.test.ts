@@ -43,6 +43,9 @@ jest.spyOn(Endpoints.prototype, 'req')
 	.mockImplementationOnce(async () => {
 		return new Error('FALHA AO LER O CERTIFICADO');
 	})
+	.mockResolvedValueOnce('')
+	.mockResolvedValueOnce('')
+	.mockResolvedValueOnce('')
 	.mockResolvedValueOnce('');
 
 jest.spyOn(Auth.prototype, 'getAccessToken').mockImplementation(() => {
@@ -59,7 +62,9 @@ const mockFs = fs as jest.Mocked<typeof fs>;
 mockFs.readFileSync.mockReturnValueOnce('');
 
 // eslint-disable-next-line prettier/prettier
-jest.mock('axios', () =>jest.fn()
+jest.mock('axios', () =>
+	jest
+		.fn()
 		.mockResolvedValueOnce({
 			status: 200,
 			data: {
@@ -151,5 +156,23 @@ describe('Endpoints Tests', () => {
 		await endpoints.run(name, params, []);
 		const res = await endpoints.createRequest(route);
 		expect(res).toStrictEqual(expected);
+	});
+
+	it('should include partner-token header when partnerToken is set', async () => {
+		const optionsWithPartnerToken = {
+			...options,
+			partnerToken: 'my-partner-token',
+		};
+		const endpoints = new Endpoints(optionsWithPartnerToken, constants);
+		await endpoints.run('listAccountConfig', [], []);
+		const res: any = await endpoints.createRequest('/v2/gn/config');
+		expect(res.headers['partner-token']).toBe('my-partner-token');
+	});
+
+	it('should not include partner-token header when partnerToken is not set', async () => {
+		const endpoints = new Endpoints(options, constants);
+		await endpoints.run('listAccountConfig', [], []);
+		const res: any = await endpoints.createRequest('/v2/gn/config');
+		expect(res.headers['partner-token']).toBeUndefined();
 	});
 });
