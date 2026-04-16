@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
-import Endpoints from './src/endpoints';
 import constants from './src/constants';
+import Endpoints from './src/endpoints';
 import { GnConfig } from './src/interfaces/gnConfig.interface';
 import { GnCredentials } from './src/interfaces/gnCredentials.interface';
 
@@ -21,8 +21,12 @@ class Gerencianet {
 			sandbox: options.sandbox,
 		};
 
-		if(options.pemKey){
-			credentials.pemKey = options.pemKey
+		if (options.pemKey) {
+			credentials.pemKey = options.pemKey;
+		}
+
+		if (options.partnerToken) {
+			credentials.partnerToken = options.partnerToken;
 		}
 
 		const methods = {};
